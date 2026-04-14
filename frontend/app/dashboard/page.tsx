@@ -27,32 +27,15 @@ export default function DashboardPage() {
     fetchDashboard();
   }, []);
 
-  if (loading) return <p>Carregando dashboard...</p>;
-
-  return (
+  if (loading) return (
     <div>
-      <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
-
-      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="rounded-lg bg-white p-6 shadow">
-          <h2 className="text-lg font-semibold">Total de Usuários</h2>
-          <p className="mt-2 text-3xl font-bold text-blue-600">
-            {data?.totalUsers}
-          </p>
-        </div>
-
-        <div className="rounded-lg bg-white p-6 shadow">
-          <h2 className="text-lg font-semibold">Total de Produtos</h2>
-          <p className="mt-2 text-3xl font-bold text-green-600">
-            {data?.totalProducts}
-          </p>
-        </div>
-      </div>
-
-      <div className="rounded-lg bg-white p-6 shadow">
-        <h2 className="mb-2 text-lg font-semibold">Usuário Logado</h2>
-        <p><strong>Email:</strong> {data?.loggedUser.email}</p>
-        <p><strong>Perfil:</strong> {data?.loggedUser.role}</p>
+      <h1 className="mb-6 text-3xl font-bold text-[#1B2A4A]">Dashboard</h1>
+      <div className="flex items-center gap-2 text-gray-500">
+        <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+        </svg>
+        Carregando dashboard...
       </div>
     </div>
   );
