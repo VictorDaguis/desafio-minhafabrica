@@ -23,29 +23,43 @@ export default function DashboardPage() {
         setLoading(false);
       }
     }
+
     fetchDashboard();
   }, []);
 
   return (
-    <div>
-      {/* Header idêntico ao de Produtos */}
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-[#1B2A4A]">Dashboard</h1>
-      </div>
+    <div className="p-6">
+      {/* Título fixo que aparece IMEDIATAMENTE ao entrar na tela */}
+      <h1 className="mb-6 text-3xl font-bold text-[#1B2A4A]">Dashboard</h1>
 
       {loading ? (
-        // Spinner com a mesma cor e estilo de Produtos
-        <div className="flex items-center gap-2 text-[#1B2A4A]">
+        /* Estado de Carregamento (estilo padrão) */
+        <div className="flex items-center gap-2 text-gray-500">
           <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
           </svg>
-          Carregando dashboard...
+          <span>Carregando dashboard...</span>
         </div>
       ) : (
-        <div className="grid gap-6 text-gray-800">
-           {/* Seus cards e gráficos entram aqui */}
-           <p>Dashboard pronto!</p>
+        /* Conteúdo do seu Dashboard (Cards e Dados) */
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h2 className="text-sm font-medium text-gray-500 uppercase">Total de Vendas</h2>
+            <p className="text-3xl font-bold text-[#1B2A4A] mt-2">
+              R$ {data?.totalSales?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,00"}
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h2 className="text-sm font-medium text-gray-500 uppercase">Total de Produtos</h2>
+            <p className="text-3xl font-bold text-[#1B2A4A] mt-2">{data?.totalProducts || 0}</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h2 className="text-sm font-medium text-gray-500 uppercase">Total de Clientes</h2>
+            <p className="text-3xl font-bold text-[#1B2A4A] mt-2">{data?.totalUsers || 0}</p>
+          </div>
         </div>
       )}
     </div>
