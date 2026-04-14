@@ -26,36 +26,28 @@ export default function DashboardPage() {
     fetchDashboard();
   }, []);
 
-  if (loading) return (
-    <div className="flex items-center gap-2 text-[#1B2A4A]">
-      <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-      </svg>
-      Carregando dashboard...
-    </div>
-  );
-
   return (
     <div>
-      <h1 className="mb-6 text-3xl font-bold text-[#1B2A4A]">Dashboard</h1>
-
-      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="rounded-lg bg-white p-6 shadow">
-          <h2 className="text-lg font-semibold text-[#1B2A4A]">Total de Usuários</h2>
-          <p className="mt-2 text-3xl font-bold text-[#1B2A4A]">{data?.totalUsers}</p>
-        </div>
-        <div className="rounded-lg bg-white p-6 shadow">
-          <h2 className="text-lg font-semibold text-[#1B2A4A]">Total de Produtos</h2>
-          <p className="mt-2 text-3xl font-bold text-[#1B2A4A]">{data?.totalProducts}</p>
-        </div>
+      {/* Header idêntico ao de Produtos */}
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-[#1B2A4A]">Dashboard</h1>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow">
-        <h2 className="mb-2 text-lg font-semibold text-[#1B2A4A]">Usuário Logado</h2>
-        <p className="text-gray-700"><strong>Email:</strong> {data?.loggedUser.email}</p>
-        <p className="text-gray-700"><strong>Perfil:</strong> {data?.loggedUser.role}</p>
-      </div>
+      {loading ? (
+        // Spinner com a mesma cor e estilo de Produtos
+        <div className="flex items-center gap-2 text-[#1B2A4A]">
+          <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+          </svg>
+          Carregando dashboard...
+        </div>
+      ) : (
+        <div className="grid gap-6 text-gray-800">
+           {/* Seus cards e gráficos entram aqui */}
+           <p>Dashboard pronto!</p>
+        </div>
+      )}
     </div>
   );
 }
