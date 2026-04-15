@@ -2,8 +2,9 @@ const productService = require("../services/productService");
 
 async function listProducts(req, res) {
   try {
-    const products = await productService.listProducts();
-    return res.status(200).json(products);
+    const { page = 1, limit = 10, search = "" } = req.query;
+    const result = await productService.listProducts({ page, limit, search });
+    return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -26,7 +27,6 @@ async function updateProduct(req, res) {
     if (error.message === "Produto não encontrado") {
       return res.status(404).json({ message: error.message });
     }
-
     return res.status(400).json({ message: error.message });
   }
 }
@@ -39,7 +39,6 @@ async function deleteProduct(req, res) {
     if (error.message === "Produto não encontrado") {
       return res.status(404).json({ message: error.message });
     }
-
     return res.status(400).json({ message: error.message });
   }
 }

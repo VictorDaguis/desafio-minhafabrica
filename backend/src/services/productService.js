@@ -1,7 +1,7 @@
 const productRepository = require("../repositories/productRepository");
 
-async function listProducts() {
-  return productRepository.findAll();
+async function listProducts({ page, limit, search }) {
+  return productRepository.findAllPaginated({ page, limit, search });
 }
 
 async function createProduct({ name, description, price, stock, category }) {

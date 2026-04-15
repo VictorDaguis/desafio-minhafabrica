@@ -2,8 +2,9 @@ const userService = require("../services/userService");
 
 async function listUsers(req, res) {
   try {
-    const users = await userService.listUsers();
-    return res.status(200).json(users);
+    const { page = 1, limit = 10, search = "" } = req.query;
+    const result = await userService.listUsers({ page, limit, search });
+    return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -26,7 +27,6 @@ async function updateUser(req, res) {
     if (error.message === "Usuário não encontrado") {
       return res.status(404).json({ message: error.message });
     }
-
     return res.status(400).json({ message: error.message });
   }
 }
@@ -39,7 +39,6 @@ async function deleteUser(req, res) {
     if (error.message === "Usuário não encontrado") {
       return res.status(404).json({ message: error.message });
     }
-
     return res.status(400).json({ message: error.message });
   }
 }

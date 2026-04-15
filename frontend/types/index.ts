@@ -36,3 +36,19 @@ export type LoginResponse = {
     role: string;
   };
 };
+
+// ✅ NOVOS TIPOS PARA FORMULÁRIOS
+export type UserFormData = {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+};
+
+export type ProductFormData = {
+  name: string;
+  description: string;
+  price: string;      // string porque vem do input
+  stock: string;      // string porque vem do input
+  category: string;
+};

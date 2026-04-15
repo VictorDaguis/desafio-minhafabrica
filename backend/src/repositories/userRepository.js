@@ -4,8 +4,29 @@ async function findByEmail(email) {
   return User.findOne({ email });
 }
 
-async function findAll() {
-  return User.find().select("-password");
+async function findAllPaginated({ page = 1, limit = 10, search = "" }) {
+  const skip = (page - 1) * limit;
+  const query = search
+    ? {
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } }
+        ]
+      }
+    : {};
+
+  const [users, total] = await Promise.all([
+    User.find(query).skip(skip).limit(limit).select("-password").sort({ createdAt: -1 }),
+    User.countDocuments(query)
+  ]);
+
+  return {
+    data: users,
+    total,
+    page: Number(page),
+    limit: Number(limit),
+    totalPages: Math.ceil(total / limit)
+  };
 }
 
 async function findById(id) {
@@ -33,7 +54,7 @@ async function countUsers() {
 
 module.exports = {
   findByEmail,
-  findAll,
+  findAllPaginated,
   findById,
   create,
   updateById,

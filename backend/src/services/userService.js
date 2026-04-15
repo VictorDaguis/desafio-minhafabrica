@@ -1,8 +1,8 @@
 const userRepository = require("../repositories/userRepository");
 const { hashPassword } = require("../utils/hash");
 
-async function listUsers() {
-  return userRepository.findAll();
+async function listUsers({ page, limit, search }) {
+  return userRepository.findAllPaginated({ page, limit, search });
 }
 
 async function createUser({ name, email, password, role }) {
