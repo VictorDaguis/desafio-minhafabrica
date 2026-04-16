@@ -1,0 +1,16 @@
+# Dependências
+node_modules/
+
+# Arquivos de ambiente (CRÍTICO)
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# IDE (opcional)
+.idea/
+.vscode/

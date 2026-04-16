@@ -4,16 +4,21 @@ async function findByEmail(email) {
   return User.findOne({ email });
 }
 
+// ✅ NOVA FUNÇÃO: busca por nome
+async function findByName(name) {
+  return User.findOne({ name });
+}
+
 async function findAllPaginated({ page = 1, limit = 10, search = "" }) {
   const skip = (page - 1) * limit;
   const query = search
-    ? {
+      ? {
         $or: [
           { name: { $regex: search, $options: "i" } },
           { email: { $regex: search, $options: "i" } }
         ]
       }
-    : {};
+      : {};
 
   const [users, total] = await Promise.all([
     User.find(query).skip(skip).limit(limit).select("-password").sort({ createdAt: -1 }),
@@ -54,6 +59,7 @@ async function countUsers() {
 
 module.exports = {
   findByEmail,
+  findByName,          // ✅ exportada
   findAllPaginated,
   findById,
   create,

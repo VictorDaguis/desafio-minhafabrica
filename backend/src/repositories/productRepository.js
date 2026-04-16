@@ -3,8 +3,8 @@ const Product = require("../models/Product");
 async function findAllPaginated({ page = 1, limit = 10, search = "" }) {
   const skip = (page - 1) * limit;
   const query = search
-    ? { name: { $regex: search, $options: "i" } }
-    : {};
+      ? { name: { $regex: search, $options: "i" } }
+      : {};
 
   const [products, total] = await Promise.all([
     Product.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
@@ -22,6 +22,11 @@ async function findAllPaginated({ page = 1, limit = 10, search = "" }) {
 
 async function findById(id) {
   return Product.findById(id);
+}
+
+// ✅ NOVA FUNÇÃO: busca por nome
+async function findByName(name) {
+  return Product.findOne({ name });
 }
 
 async function create(productData) {
@@ -46,6 +51,7 @@ async function countProducts() {
 module.exports = {
   findAllPaginated,
   findById,
+  findByName,          // ✅ exportada
   create,
   updateById,
   deleteById,
