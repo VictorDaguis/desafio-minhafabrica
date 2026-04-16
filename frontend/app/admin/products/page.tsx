@@ -419,6 +419,7 @@ export default function ProductsPage() {
                 placeholder="Preço *"
                 value={createForm.price}
                 onChange={(e) => setCreateForm({ ...createForm, price: e.target.value })}
+                min="0"
                 className="rounded border p-2 text-gray-800 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600"
               />
               <input
@@ -426,6 +427,7 @@ export default function ProductsPage() {
                 placeholder="Estoque"
                 value={createForm.stock}
                 onChange={(e) => setCreateForm({ ...createForm, stock: e.target.value })}
+                min="0"
                 className="rounded border p-2 text-gray-800 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600"
               />
               <input
@@ -497,6 +499,7 @@ export default function ProductsPage() {
                 placeholder="Preço *"
                 value={editForm.price}
                 onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+                min="0"
                 className="rounded border p-2 text-gray-800 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600"
               />
               <input
@@ -504,6 +507,7 @@ export default function ProductsPage() {
                 placeholder="Estoque"
                 value={editForm.stock}
                 onChange={(e) => setEditForm({ ...editForm, stock: e.target.value })}
+                min="0"
                 className="rounded border p-2 text-gray-800 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600"
               />
               <input
