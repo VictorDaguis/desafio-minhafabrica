@@ -11,6 +11,6 @@ logs
 *.log
 npm-debug.log*
 
-# IDE (opcional)
+# IDE
 .idea/
 .vscode/
