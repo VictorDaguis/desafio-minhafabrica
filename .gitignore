@@ -1,2 +1,14 @@
+# Dependências
+node_modules/
+
+# Ambiente
+.env
+.env.local
+
 # IDE
 .idea/
+
+# Build
+.next/
+dist/
+build/

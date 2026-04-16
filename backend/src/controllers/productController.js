@@ -12,7 +12,16 @@ async function listProducts(req, res) {
 
 async function createProduct(req, res) {
   try {
-    const product = await productService.createProduct(req.body);
+    // Prepara dados da imagem se existir
+    let imageData = null;
+    if (req.file) {
+      imageData = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+    }
+
+    const product = await productService.createProduct(req.body, imageData);
     return res.status(201).json(product);
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -21,7 +30,16 @@ async function createProduct(req, res) {
 
 async function updateProduct(req, res) {
   try {
-    const product = await productService.updateProduct(req.params.id, req.body);
+    // Prepara dados da imagem se existir
+    let imageData = null;
+    if (req.file) {
+      imageData = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+    }
+
+    const product = await productService.updateProduct(req.params.id, req.body, imageData);
     return res.status(200).json(product);
   } catch (error) {
     if (error.message === "Produto não encontrado") {
@@ -43,9 +61,24 @@ async function deleteProduct(req, res) {
   }
 }
 
+// NOVO MÉTODO: serve a imagem do produto
+async function getProductImage(req, res) {
+  try {
+    const product = await productService.getProductImage(req.params.id);
+    if (!product || !product.image || !product.image.data) {
+      return res.status(404).send("Imagem não encontrada");
+    }
+    res.set("Content-Type", product.image.contentType);
+    res.send(product.image.data);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
 module.exports = {
   listProducts,
   createProduct,
   updateProduct,
   deleteProduct,
+  getProductImage,
 };

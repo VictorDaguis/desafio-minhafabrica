@@ -26,6 +26,11 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    // NOVO CAMPO PARA IMAGEM
+    image: {
+      data: Buffer,
+      contentType: String,
+    },
   },
   {
     timestamps: true,
