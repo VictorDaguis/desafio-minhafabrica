@@ -14,6 +14,10 @@ export type Product = {
   stock: number;
   category?: string;
   createdAt?: string;
+  image?: {          // ✅ ADICIONADO
+    data?: unknown;
+    contentType?: string;
+  };
 };
 
 export type DashboardData = {
@@ -37,7 +41,6 @@ export type LoginResponse = {
   };
 };
 
-// ✅ NOVOS TIPOS PARA FORMULÁRIOS
 export type UserFormData = {
   name: string;
   email: string;
@@ -48,7 +51,7 @@ export type UserFormData = {
 export type ProductFormData = {
   name: string;
   description: string;
-  price: string;      // string porque vem do input
-  stock: string;      // string porque vem do input
+  price: string;
+  stock: string;
   category: string;
 };
