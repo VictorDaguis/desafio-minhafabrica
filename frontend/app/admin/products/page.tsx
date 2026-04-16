@@ -18,7 +18,6 @@ interface PaginatedResponse {
 
 const emptyForm: ProductFormData = { name: "", description: "", price: "", stock: "", category: "" };
 
-// ✅ Componente para placeholder de imagem (caixinha com ícone)
 function ImagePlaceholder({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const sizeClasses = {
     sm: "h-8 w-8",
@@ -37,11 +36,10 @@ function ImagePlaceholder({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   );
 }
 
-// ✅ Componente para exibir imagem na tabela (com fallback)
 function ProductImage({ productId, alt }: { productId: string; alt: string }) {
   const [error, setError] = useState(false);
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
-  const imageUrl = error ? null : `${baseUrl}/products/${productId}/image?t=${Date.now()}`;
+  const imageUrl = error ? undefined : `${baseUrl}/products/${productId}/image?t=${Date.now()}`;
 
   if (error || !productId) {
     return <ImagePlaceholder size="md" />;
@@ -57,7 +55,6 @@ function ProductImage({ productId, alt }: { productId: string; alt: string }) {
   );
 }
 
-// ✅ Componente para pré-visualização de arquivo selecionado (com fallback para currentUrl)
 function FilePreview({ file, currentUrl, onRemove }: { file: File | null; currentUrl: string | null; onRemove?: () => void }) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [currentError, setCurrentError] = useState(false);
@@ -72,7 +69,6 @@ function FilePreview({ file, currentUrl, onRemove }: { file: File | null; curren
     }
   }, [file]);
 
-  // Se há um arquivo selecionado, mostra sua pré-visualização
   if (previewUrl) {
     return (
       <div className="relative">
@@ -96,7 +92,6 @@ function FilePreview({ file, currentUrl, onRemove }: { file: File | null; curren
     );
   }
 
-  // Se não há arquivo, mas há uma URL atual e ainda não falhou, tenta exibi-la
   if (currentUrl && !currentError) {
     return (
       <img
@@ -108,7 +103,6 @@ function FilePreview({ file, currentUrl, onRemove }: { file: File | null; curren
     );
   }
 
-  // Se não há arquivo, nem URL atual (ou a URL atual falhou), mostra placeholder
   return <ImagePlaceholder size="lg" />;
 }
 
@@ -225,7 +219,6 @@ export default function ProductsPage() {
     });
     setEditImage(null);
     setRemoveImage(false);
-    // ✅ Só define URL se o produto realmente tem imagem
     setCurrentImageUrl(product.image ? getImageUrl(product._id) : null);
     setEditOpen(true);
   }
@@ -524,7 +517,6 @@ export default function ProductsPage() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Imagem atual
                 </label>
-                {/* ✅ Exibe pré-visualização com fallback de placeholder se necessário */}
                 {!editImage && <FilePreview file={null} currentUrl={currentImageUrl} />}
                 {editImage && (
                   <FilePreview
