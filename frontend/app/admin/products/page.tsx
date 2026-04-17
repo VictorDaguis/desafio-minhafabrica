@@ -106,6 +106,20 @@ function FilePreview({ file, currentUrl, onRemove }: { file: File | null; curren
   return <ImagePlaceholder size="lg" />;
 }
 
+// ✅ Funções auxiliares para máscara monetária
+function formatCurrency(value: string | number): string {
+  const numericValue = typeof value === 'string' ? parseFloat(value) : value;
+  if (isNaN(numericValue)) return 'R$ 0,00';
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(numericValue);
+}
+
+function parseCurrency(value: string): string {
+  // Remove tudo que não for dígito, vírgula ou ponto, depois converte para número
+  const cleaned = value.replace(/[^\d,.-]/g, '').replace(',', '.');
+  const numeric = parseFloat(cleaned);
+  return isNaN(numeric) ? '' : numeric.toString();
+}
+
 export default function ProductsPage() {
   useAuth();
 
@@ -121,6 +135,7 @@ export default function ProductsPage() {
   const [createForm, setCreateForm] = useState<ProductFormData>(emptyForm);
   const [createImage, setCreateImage] = useState<File | null>(null);
   const [creating, setCreating] = useState(false);
+  const [createPriceDisplay, setCreatePriceDisplay] = useState(""); // ✅ exibição formatada
 
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState<ProductFormData>(emptyForm);
@@ -129,6 +144,7 @@ export default function ProductsPage() {
   const [editing, setEditing] = useState(false);
   const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null);
   const [removeImage, setRemoveImage] = useState(false);
+  const [editPriceDisplay, setEditPriceDisplay] = useState(""); // ✅ exibição formatada
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -167,6 +183,43 @@ export default function ProductsPage() {
     return `${baseUrl}/products/${productId}/image`;
   }
 
+  // ✅ Função para formatar preço no padrão brasileiro (usada na tabela)
+  function formatPrice(price: number) {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+  }
+
+  // ✅ Handlers para máscara no modal de criação
+  function handleCreatePriceChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const rawValue = e.target.value;
+    const numericString = parseCurrency(rawValue);
+    setCreateForm({ ...createForm, price: numericString });
+    setCreatePriceDisplay(rawValue);
+  }
+
+  function handleCreatePriceBlur() {
+    if (createForm.price) {
+      setCreatePriceDisplay(formatCurrency(createForm.price));
+    } else {
+      setCreatePriceDisplay('');
+    }
+  }
+
+  // ✅ Handlers para máscara no modal de edição
+  function handleEditPriceChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const rawValue = e.target.value;
+    const numericString = parseCurrency(rawValue);
+    setEditForm({ ...editForm, price: numericString });
+    setEditPriceDisplay(rawValue);
+  }
+
+  function handleEditPriceBlur() {
+    if (editForm.price) {
+      setEditPriceDisplay(formatCurrency(editForm.price));
+    } else {
+      setEditPriceDisplay('');
+    }
+  }
+
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     if (!createForm.name || !createForm.price) {
@@ -187,8 +240,8 @@ export default function ProductsPage() {
       const formData = new FormData();
       formData.append("name", createForm.name);
       formData.append("description", createForm.description);
-      formData.append("price", String(createForm.price));
-      formData.append("stock", String(createForm.stock));
+      formData.append("price", createForm.price);
+      formData.append("stock", createForm.stock);
       formData.append("category", createForm.category);
       if (createImage) formData.append("image", createImage);
 
@@ -197,6 +250,7 @@ export default function ProductsPage() {
       toast.success("Produto criado!");
       setCreateForm(emptyForm);
       setCreateImage(null);
+      setCreatePriceDisplay("");
       if (createFileInputRef.current) createFileInputRef.current.value = "";
       setCreateOpen(false);
       fetchProducts();
@@ -217,6 +271,7 @@ export default function ProductsPage() {
       stock: String(product.stock),
       category: product.category || "",
     });
+    setEditPriceDisplay(formatCurrency(product.price));
     setEditImage(null);
     setRemoveImage(false);
     setCurrentImageUrl(product.image ? getImageUrl(product._id) : null);
@@ -243,8 +298,8 @@ export default function ProductsPage() {
       const formData = new FormData();
       formData.append("name", editForm.name);
       formData.append("description", editForm.description);
-      formData.append("price", String(editForm.price));
-      formData.append("stock", String(editForm.stock));
+      formData.append("price", editForm.price);
+      formData.append("stock", editForm.stock);
       formData.append("category", editForm.category);
       if (editImage) formData.append("image", editImage);
       if (removeImage) formData.append("removeImage", "true");
@@ -256,6 +311,7 @@ export default function ProductsPage() {
       setEditImage(null);
       setCurrentImageUrl(null);
       setRemoveImage(false);
+      setEditPriceDisplay("");
 
       await new Promise(resolve => setTimeout(resolve, 50));
       fetchProducts();
@@ -346,7 +402,7 @@ export default function ProductsPage() {
                       </td>
                       <td className="p-3 text-gray-800 dark:text-gray-200">{product.name}</td>
                       <td className="p-3 text-gray-800 dark:text-gray-200">{product.category || "—"}</td>
-                      <td className="p-3 text-gray-800 dark:text-gray-200">R$ {Number(product.price).toFixed(2)}</td>
+                      <td className="p-3 text-gray-800 dark:text-gray-200">{formatPrice(product.price)}</td>
                       <td className="p-3 text-gray-800 dark:text-gray-200">{product.stock}</td>
                       <td className="flex gap-2 p-3">
                         <button
@@ -414,12 +470,14 @@ export default function ProductsPage() {
                 onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
                 className="rounded border p-2 text-gray-800 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600"
               />
+              {/* ✅ Input de preço com máscara */}
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Preço *"
-                value={createForm.price}
-                onChange={(e) => setCreateForm({ ...createForm, price: e.target.value })}
-                min="0"
+                value={createPriceDisplay}
+                onChange={handleCreatePriceChange}
+                onBlur={handleCreatePriceBlur}
                 className="rounded border p-2 text-gray-800 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600"
               />
               <input
@@ -457,6 +515,7 @@ export default function ProductsPage() {
                   onClick={() => {
                     setCreateOpen(false);
                     setCreateImage(null);
+                    setCreatePriceDisplay("");
                     if (createFileInputRef.current) createFileInputRef.current.value = "";
                   }}
                   className="flex-1 rounded border px-4 py-2 text-gray-700 dark:text-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -494,12 +553,14 @@ export default function ProductsPage() {
                 onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                 className="rounded border p-2 text-gray-800 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600"
               />
+              {/* ✅ Input de preço com máscara */}
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Preço *"
-                value={editForm.price}
-                onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
-                min="0"
+                value={editPriceDisplay}
+                onChange={handleEditPriceChange}
+                onBlur={handleEditPriceBlur}
                 className="rounded border p-2 text-gray-800 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600"
               />
               <input
@@ -565,6 +626,7 @@ export default function ProductsPage() {
                     setEditImage(null);
                     setCurrentImageUrl(null);
                     setRemoveImage(false);
+                    setEditPriceDisplay("");
                   }}
                   className="flex-1 rounded border px-4 py-2 text-gray-700 dark:text-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
