@@ -13,24 +13,23 @@ dotenv.config();
 
 const app = express();
 
-// Conecta ao MongoDB (a função internamente usa process.env.MONGO_URI ou MONGODB_URI - verifique)
+// Conecta ao MongoDB
 connectDatabase();
 
-// ✅ CONFIGURAÇÃO DE CORS PARA PRODUÇÃO
-const allowedOrigins = process.env.NODE_ENV === 'production'
-  ? [
-      'https://desafio-minhafabrica.vercel.app',   // Seu frontend na Vercel
-      // Adicione outros domínios se necessário
-    ]
-  : ['http://localhost:3000'];                     // Desenvolvimento local
+// ✅ CONFIGURAÇÃO DE CORS (SEM CONDICIONAL - MAIS SEGURO)
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://desafio-minhafabrica.vercel.app'
+];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Permite requisições sem origin (ex: Postman, apps mobile, ou chamadas de servidor)
+    // Permite requisições sem origin (ex: Postman, apps mobile)
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.error(`Origem bloqueada pelo CORS: ${origin}`);
       callback(new Error('Origem não permitida pela política de CORS'));
     }
   },
@@ -50,7 +49,7 @@ app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/products", productRoutes);
 
-// Middleware de tratamento de erros (adicional, mas recomendado)
+// Middleware de tratamento de erros
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Erro interno no servidor" });
