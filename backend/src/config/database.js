@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+//Contém a conexão com o banco de dados, MongoDB Atlas, é chamado 1x quando o servidor inicia
 async function connectDatabase() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
