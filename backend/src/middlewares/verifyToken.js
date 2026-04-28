@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-
+//Código que roda no meio de uma requisição, antes de chegar no controller, ele verifica se o JWT é válido antes de deixar acessar rotas protegidas como usuários e produtos
 function verifyToken(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
