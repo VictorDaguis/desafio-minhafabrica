@@ -1,5 +1,5 @@
 const Product = require("../models/Product");
-
+//Camada que faz as queries direto no banco, funções como findAll(), findById(), create(), deleteById(), só se comunica com os models
 async function findAllPaginated({ page = 1, limit = 10, search = "" }) {
   const skip = (page - 1) * limit;
   const query = search ? { name: { $regex: search, $options: "i" } } : {};
