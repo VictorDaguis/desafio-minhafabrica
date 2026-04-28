@@ -1,5 +1,5 @@
 const authService = require("../services/authService");
-
+//São os porteiros da aplicação. Recebem a requisição HTTP (req), pegam os dados que vieram (email, senha, nome etc), repassam para o service e devolvem a resposta (res). Eles não contêm lógica de negócio — só recebem e respondem
 async function login(req, res) {
   try {
     const { email, password } = req.body;
