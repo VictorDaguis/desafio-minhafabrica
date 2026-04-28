@@ -1,5 +1,5 @@
 const multer = require("multer");
-
+//middleware de upload de imagens
 // Configura armazenamento em memória (não salva em disco)
 const storage = multer.memoryStorage();
 
@@ -15,7 +15,7 @@ const upload = multer({
       "image/png",
       "image/webp",
       "image/gif",
-      "image/avif",        // ✅ Suporte a AVIF
+      "image/avif",    
     ];
     if (allowedMimes.includes(file.mimetype)) {
       cb(null, true);
