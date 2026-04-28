@@ -1,6 +1,10 @@
 const jwt = require("jsonwebtoken");
 const userRepository = require("../repositories/userRepository");
 const { comparePassword, hashPassword } = require("../utils/hash");
+//faz o processo de autenticação em 3 etapas: Busca o usuário pelo email no banco — se não achar, lança erro genérico "Credenciais inválidas" (proposital — não diz se foi o email ou a senha que errou, por segurança)
+//Compara a senha digitada com o hash salvo no banco usando bcrypt
+//Se tudo ok, gera um JWT token assinado com o JWT_SECRET que expira em 1 dia, contendo id, email e role do usuário
+//seedAdmin() — cria o usuário admin inicial. Primeiro verifica se já existe — se existir, retorna ele sem criar de novo. Isso evita duplicatas se a rota /seed for chamada mais de uma vez.
 
 async function login(email, password) {
   const user = await userRepository.findByEmail(email);
