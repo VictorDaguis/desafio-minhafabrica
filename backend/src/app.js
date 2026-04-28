@@ -1,5 +1,6 @@
 const express = require("express");
 const dns = require('dns');
+//força o Node.js a usar IPv4 antes de IPv6 ao resolver DNS
 dns.setDefaultResultOrder('ipv4first');
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -16,7 +17,7 @@ const app = express();
 // Conecta ao MongoDB
 connectDatabase();
 
-// ✅ CONFIGURAÇÃO DE CORS (SEM CONDICIONAL - MAIS SEGURO)
+// CONFIGURAÇÃO DE CORS (SEM CONDICIONAL - MAIS SEGURO)
 const allowedOrigins = [
   'http://localhost:3000',
   'https://desafio-minhafabrica.vercel.app'
@@ -43,13 +44,13 @@ app.get("/", (req, res) => {
   res.json({ message: "API MinhaFabrica funcionando" });
 });
 
-// Rotas da API
+// Rotas da API, cada grupo de rotas tem um prefixo. Então quando chega POST /api/v1/auth/login, o Express sabe que deve ir para o authRoutes e dentro dele procurar a rota /login
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/products", productRoutes);
 
-// Middleware de tratamento de erros
+// Middleware de tratamento de erros centralizados
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Erro interno no servidor" });
